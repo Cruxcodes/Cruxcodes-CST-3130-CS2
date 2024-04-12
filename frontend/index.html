@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plotly Graph</title>
+    <!-- Include Plotly CDN -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  </head>
+  <body>
+    <div id="plot"></div>
+
+    <script>
+      // Function to fetch plot data
+      async function fetchPredictions() {
+        try {
+          // Fetch the predictions data from the server
+          const response = await fetch(
+            "../machine_learning/synthetic/predictions/synthetic_prediction.json"
+          );
+          const predictions = await response.json();
+
+          // Call function to plot the data
+          plotData(predictions);
+        } catch (error) {
+          console.error("Error fetching predictions data:", error);
+        }
+      }
+
+      // Function to plot the data
+      function plotData(predictions) {
+        console.log(predictions[0].mean);
+
+        // Create Plotly trace from the predictions object
+        const trace = {
+          x: predictions.mean,
+          y: predictions.quantiles,
+          type: "scatter",
+          mode: "lines",
+          name: "Mean", // You can change this as needed
+          marker: {
+            color: "rgb(219, 64, 82)",
+            size: 12,
+          },
+        };
+
+        // Create layout for the plot
+        const layout = {
+          title: "Synthetic Data Plot",
+          font: {
+            size: 25,
+          },
+          xaxis: {
+            title: "Time (hours)",
+          },
+          yaxis: {
+            title: "Value",
+          },
+        };
+
+        // Plot the data using Plotly
+        Plotly.newPlot("plot", [trace], layout);
+      }
+
+      // Call fetchPredictions function when the page loads
+      window.onload = fetchPredictions;
+    </script>
+  </body>
+</html>

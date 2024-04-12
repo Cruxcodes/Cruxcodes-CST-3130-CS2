@@ -2,13 +2,13 @@ const world = "world";
 
 // import { fetchWeatherApi } from "openmeteo";
 import axios from "axios";
-let AWS = require("aws-sdk");
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { PutCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { NewsEntry } from "./news_api";
 
-let documentClient = new AWS.DynamoDB.DocumentClient();
-
-export function hello(who: string = world): string {
-  return `Hello ${who}! `;
-}
+//This is where the connection to the dynamodb is created
+const client = new DynamoDBClient({});
+const documentClient = DynamoDBDocumentClient.from(client);
 
 interface BoredApi {
   activity: string | null;
@@ -16,6 +16,7 @@ interface BoredApi {
   price: number;
 }
 
+// This is the query parameter for the ope matroo endpoint
 const params = {
   latitude: 51.5072,
   longitude: 0.1276,
@@ -30,17 +31,46 @@ const params = {
   ],
 };
 
-async function getWeatherData() {
+let feature_lists: Array<string> = [
+  "temperature_2m",
+  "relative_humidity_2m",
+  "precipitation",
+  "wind_speed_10m",
+  "wind_direction_10m",
+];
+
+// This uploads weather data to the dynamo db
+async function uploadWeatherData() {
   try {
     const url = "https://archive-api.open-meteo.com/v1/archive";
     const responses = await axios.get(url, { params });
-    const response: BoredApi = responses.data;
-    console.log(response);
+    const response: any = responses.data.hourly;
+    for (let i = 0; i < feature_lists.length; i++) {
+      for (let j = 0; j < response[feature_lists[i]].length; j++) {
+        //This returns the value of each feature
+        const command = new PutCommand({
+          TableName: "weather",
+          Item: {
+            weather_feature: feature_lists[i].toString(),
+            weather_timestamp: response["time"][j],
+            feature_value: response[feature_lists[i]][j],
+          },
+        });
+        //Store data in DynamoDB and handle errors
+        try {
+          const response = await documentClient.send(command);
+          console.log(response);
+        } catch (err) {
+          console.error("ERROR uploading data: " + JSON.stringify(err));
+        }
+      }
+    }
   } catch (ex: any) {
     if (ex.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
       console.log("Response data:", ex.response.data);
+      // console.log()
       console.log("Response status:", ex.response.status);
       console.log("Response headers:", ex.response.headers);
     } else if (ex.request) {
@@ -53,18 +83,32 @@ async function getWeatherData() {
   }
 }
 
-async function getNewsApi() {
+
+// uploadWeatherData();
+
+async function uploadNewsData(newsEntry: NewsEntry) {
   try {
-    const url =
-      "https://newsapi.org/v2/everything?q=tem&from=2024-12-29&sortBy=publishedAt&apiKey=b6cb9dda81e548d1912bcf92ce7f8c69";
-    const responses = await axios.get(url, { params });
-    const response: BoredApi = responses.data;
-    console.log(response);
+    const command = new PutCommand({
+      TableName: "weather",
+      Item: {
+        news_feature: newsEntry.feature,
+        news_timestamp: newsEntry.publishedAt,
+        news: newsEntry.description,
+      },
+    });
+    //Store data in DynamoDB and handle errors
+    try {
+      const response = await documentClient.send(command);
+      console.log(response);
+    } catch (err) {
+      console.error("ERROR uploading data: " + JSON.stringify(err));
+    }
   } catch (ex: any) {
     if (ex.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
       console.log("Response data:", ex.response.data);
+      // console.log()
       console.log("Response status:", ex.response.status);
       console.log("Response headers:", ex.response.headers);
     } else if (ex.request) {
@@ -76,6 +120,3 @@ async function getNewsApi() {
     }
   }
 }
-
-
-getWeatherData();

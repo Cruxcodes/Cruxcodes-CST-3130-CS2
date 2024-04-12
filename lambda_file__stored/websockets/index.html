@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebSocket Client</title>
+  </head>
+  <body>
+    <h1>Message for Server</h1>
+    <form>
+      <input type="text" name="inputString" />
+      <button type="button" onclick="sendMessage()">Submit</button>
+    </form>
+
+    <h1>Messages from Server</h1>
+    <p
+      style="border-style: solid; width: 500px; border-width: 1px"
+      id="messages"
+    ></p>
+
+    <div id="chartDiv"></div>
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <script>
+      //Open connection
+      let connection = new WebSocket(
+        "wss://c2ajwyv4r2.execute-api.us-east-1.amazonaws.com/production/"
+      );
+
+      //Log connected response
+      connection.onopen = function (event) {
+        console.log("Connected: " + JSON.stringify(event));
+        sendMessage();
+      };
+
+      //Output messages from the server
+      connection.onmessage = function (msg) {
+        // document.getElementById("messages").innerHTML +=
+        //   "Server message: " + msg.data + "<br />";
+        // console.log("Message received.");
+        console.log(msg.data);
+        const data = JSON.parse(msg.data);
+
+        let trace1 = {
+          x: data.temperature_2m.actual.times,
+          y: data.temperature_2m.actual.values,
+          mode: "line",
+          name: "Temperature",
+          marker: {
+            color: "rgb(219, 64, 82)",
+            size: 12,
+          },
+        };
+
+        // let data = [ trace1, trace2 ];
+
+        //Specify title and axis labels
+        let layout = {
+          title: "Temp",
+          xaxis: {
+            title: "Times",
+          },
+          yaxis: {
+            title: "Values",
+          },
+        };
+
+        //Draw graph
+        Plotly.newPlot("chartDiv", [trace1], layout);
+      };
+
+      //Log errors
+      connection.onerror = function (error) {
+        console.log("WebSocket Error: " + JSON.stringify(error));
+      };
+
+      //Send message to server
+      function sendMessage() {
+        //Get text from form
+        let msgText = document.forms[0].inputString.value;
+
+        //Create message to be sent to server
+        let msgObject = {
+          action: "sendMessage", //Used for routing in API Gateway
+          data: msgText,
+        };
+
+        //Send message
+        connection.send(JSON.stringify(msgObject));
+
+        //Log result
+        console.log("Message sent: " + JSON.stringify(msgObject));
+      }
+    </script>
+  </body>
+</html>
