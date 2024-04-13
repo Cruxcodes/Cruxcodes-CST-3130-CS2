@@ -116,7 +116,7 @@ connection.onmessage = function (msg) {
     x: data[selectedValue].actual.times,
     y: data[selectedValue].actual.values,
     mode: "line",
-    name: "Temperature",
+    name: data[selectedValue],
     marker: {
       color: "rgb(219, 64, 82)",
       size: 12,

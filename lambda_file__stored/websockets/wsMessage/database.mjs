@@ -60,7 +60,7 @@ async function getWeatherFeature(specificFeature) {
   //This is to query data from the weather table
   const query = {
     TableName: "weather",
-    Limit: 100,
+    Limit: 200,
     ScanIndexForward: false,
     KeyConditionExpression: "weather_feature = :wf",
     ExpressionAttributeValues: {
