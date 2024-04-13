@@ -4,7 +4,7 @@ import {
   InvokeEndpointCommand,
 } from "@aws-sdk/client-sagemaker-runtime";
 import fs from "fs";
-import {invokeEndpoint} from './main.mjs' ;
+import { invokeEndpoint } from "./main.mjs";
 
 //Create SageMakerRuntimeClient
 const client = new SageMakerRuntimeClient({});
@@ -36,7 +36,9 @@ const endpointData = {
   },
 };
 
-
-invokeEndpoint("temperature_2m", endpointData, "TempEndpoint");
-
-
+invokeEndpoint(
+  "temperature_2m",
+  "2010-01-14T16:00",
+  endpointData,
+  "TempEndpoint"
+);
