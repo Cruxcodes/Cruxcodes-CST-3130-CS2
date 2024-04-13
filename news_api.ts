@@ -6,9 +6,10 @@ import { PutCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 //This is where the connection to the dynamodb is created
 const client = new DynamoDBClient({});
 const documentClient = DynamoDBDocumentClient.from(client);
+
+//This handles the apiKey encryption
 dotenv.config();
 const apiKey = process.env.NEWS_API_KEY;
-
 
 /**This is the interface for the news table */
 export interface NewsEntry {

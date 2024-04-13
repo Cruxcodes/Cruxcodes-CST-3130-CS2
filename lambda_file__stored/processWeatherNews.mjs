@@ -15,13 +15,11 @@ export const handler = async (event) => {
         let newsFeature = record.dynamodb.NewImage.news_feature.S;
         let news = record.dynamodb.NewImage.news.S;
 
-        // console.log(`F Name:  ${newsFeature}`);
-        // console.log(`Text: ${news}`);
-        // console.log(`Timestamp: ${newsTime}`);
+        console.log(`F Name:  ${newsFeature}`);
+        console.log(`Text: ${news}`);
+        console.log(`Timestamp: ${newsTime}`);
 
         //Get sentiment of text
-
-        //Store news, newsFeature and sentiment.
 
         // Call text processing to get sentiment
         const sentimentResult = await getSentiment(news);
@@ -40,7 +38,9 @@ export const handler = async (event) => {
           const response = await documentClient.send(command);
           console.log(response);
         } catch (err) {
-          console.log("ERROR uploading NBA data: " + JSON.stringify(err));
+          console.log(
+            "ERROR uploading weather_feature data: " + JSON.stringify(err)
+          );
           throw err;
         }
       }

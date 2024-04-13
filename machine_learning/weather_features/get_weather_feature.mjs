@@ -12,7 +12,7 @@ const client = new DynamoDBClient({});
 const documentClient = DynamoDBDocumentClient.from(client);
 
 // Send command and output results
-async function getTeamData(specificTeam) {
+async function getWeatherData(specificTeam) {
   console.log("Getting data for " + specificTeam);
 
   // Construct a query to fetch data for the specific team from DynamoDB
@@ -32,8 +32,7 @@ async function getTeamData(specificTeam) {
     const feature_value = [];
     const timestamp = [];
 
-    // const features = data.Items;
-    // console.log(data);
+    const features = data.Items;
 
     // Function to format timestamp
     // function formatDate(timestampInput) {
@@ -53,6 +52,8 @@ async function getTeamData(specificTeam) {
       timestamp[i] = data[i].weather_timestamp;
     }
 
+
+    
     // // Construct formatted data object
     const formatedData = {
       weather_feature: data[0].weather_feature,
@@ -60,7 +61,7 @@ async function getTeamData(specificTeam) {
       feature_values: feature_value,
     };
 
-    // console.log(formatedData);
+    // console.log(formatedData.weather_timestamps[499]);
 
     // return data;
     return formatedData;
@@ -84,7 +85,6 @@ function saveFile(fileName, data) {
 function removeLast100FromTarget(data) {
   let newData = [...data];
   newData = newData.slice(0, -100);
-
   return newData;
 }
 
@@ -126,9 +126,6 @@ function saveDataAsFile(data) {
     //This section saves all the data into files
     saveFile(`${lowerSavingName}.json`, fullData);
     saveFile(`${lowerSavingName}_train.json`, trainingData);
-
-    
-
     saveFile(`${lowerSavingName}_testing.json`, testData);
   } catch (error) {}
 }
@@ -142,6 +139,6 @@ let feature_lists = [
 ];
 
 for (let i = 0; i < feature_lists.length; i++) {
-  const result = await getTeamData(feature_lists[i]);
+  const result = await getWeatherData(feature_lists[i]);
   saveDataAsFile(result);
 }

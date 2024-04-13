@@ -34,6 +34,7 @@ export async function deleteConnectionId(connectionId) {
   return docClient.send(deleteCommand);
 }
 
+//Returns structured data
 export async function getData() {
   const weather = [
     "temperature_2m",
@@ -49,13 +50,14 @@ export async function getData() {
     finalData[feature] = await getWeatherFeature(feature);
   }
 
-  console.log(JSON.stringify(finalData));
-
   return finalData;
 }
 
+//Get all the data from the dynamodb tables and structure them
 async function getWeatherFeature(specificFeature) {
   console.log("Getting data for " + specificFeature);
+
+  //This is to query data from the weather table
   const query = {
     TableName: "weather",
     Limit: 100,
@@ -66,65 +68,59 @@ async function getWeatherFeature(specificFeature) {
     },
   };
 
-  // const query2 = {
-  //     TableName: "News_sentiment",
-  //     Limit: 100,
-  //     ScanIndexForward: false,
-  //     KeyConditionExpression: "teamName = :t",
-  //     ExpressionAttributeValues: {
-  //         ":t": specificFeature
-  //     }
-  // };
+  //This is to query the sentiment
+  const sentimentQuery = {
+    TableName: "news_sentiment",
+    Limit: 100,
+    ScanIndexForward: false,
+    KeyConditionExpression: "weather_feature = :wf",
+    ExpressionAttributeValues: {
+      ":wf": specificFeature,
+    },
+  };
 
-  // const query3 = {
-  //   TableName: "Predictions",
-  //   Limit: 5,
-  //   KeyConditionExpression: "teamName = :t",
-  //   ExpressionAttributeValues: {
-  //     ":t": specificFeature,
-  //   },
-  // }
-
-  // const query4 = {
-  //   TableName: "News",
-  //   Limit: 10,
-  //   KeyConditionExpression: "teamName = :t",
-  //   ExpressionAttributeValues: {
-  //     ":t": specificFeature,
-  //   },
-  // };
+  const predictionsQuery = {
+    TableName: "weather_predictions",
+    Limit: 5,
+    KeyConditionExpression: "weather_feature = :wf",
+    ExpressionAttributeValues: {
+      ":wf": specificFeature,
+    },
+  };
 
   const queryCommand = new QueryCommand(query);
-  // const queryCommand2 = new QueryCommand(query2);
-  // const queryCommand3 = new QueryCommand(query3);
-  // const queryCommand4 = new QueryCommand(query4);
-
+  const sentimentCommand = new QueryCommand(sentimentQuery);
+  const predictionsCommand = new QueryCommand(predictionsQuery);
   try {
     const data = await docClient.send(queryCommand);
-    // const data2 = await docClient.send(queryCommand2)
-    // const data3 = await docClient.send(queryCommand3)
-    // const data4 = await docClient.send(queryCommand4)
+    const sentimentData = await docClient.send(sentimentCommand);
+    const predictionsData = await docClient.send(predictionsCommand);
 
     // Data structure
     const featureData = {
       actual: { times: [], values: [] },
-      predictions: { mean: [], upperQuantile: [], lowerQuantile: [] },
-      sentiment: { timestamp: [], sentiment: [] },
-      newsData: [],
+      predictions: {
+        mean: [],
+        upperPercentile: [],
+        lowerPercentile: [],
+        timeStamp: [],
+      },
+      sentiment: { sentiment: [] },
     };
     featureData.actual.times = data.Items.map((item) => item.weather_timestamp);
     featureData.actual.values = data.Items.map((item) => item.feature_value);
 
-    // featureData.sentiment.timestamp = data2.Items.map(item => item.timestampNews)
-    // featureData.sentiment.sentiment = data2.Items.map(item => item.sentiment)
+    featureData.sentiment.sentiment = sentimentData.Items.map(
+      (item) => item.sentiment
+    );
 
-    // featureData.predictions.mean = data3.Items[0].mean
-    // featureData.predictions.upperQuantile = data3.Items[0].upperQuantile
-    // featureData.predictions.lowerQuantile = data3.Items[0].lowerQuantile
+    featureData.predictions.mean = predictionsData.Items[0].mean;
+    featureData.predictions.upperPercentile =
+      predictionsData.Items[0].upperPercentile;
+    featureData.predictions.lowerPercentile =
+      predictionsData.Items[0].lowerPercentile;
+    featureData.predictions.timeStamp = predictionsData.Items[0].timeStamps;
 
-    // featureData.newsData = data4.Items.map(item => item.title)
-
-    // console.log(featureData);
     return featureData;
   } catch (error) {
     console.error("Error fetching data:", error);

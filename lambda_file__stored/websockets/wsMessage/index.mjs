@@ -8,11 +8,6 @@ const stage = "production";
 
 export const handler = async (event) => {
   try {
-    // const coin = JSON.parse(event.body).data;
-    // //Extract domain and stage from event
-    // const domain = event.requestContext.domainName;
-    // const stage = event.requestContext.stage;
-
     const data = await getData();
     console.log("Domain: " + domain + " stage: " + stage);
     //get the connection id

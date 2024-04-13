@@ -37,16 +37,51 @@
         // document.getElementById("messages").innerHTML +=
         //   "Server message: " + msg.data + "<br />";
         // console.log("Message received.");
-        console.log(msg.data);
         const data = JSON.parse(msg.data);
+        console.log(data.relative_humidity_2m.predictions);
 
         let trace1 = {
-          x: data.temperature_2m.actual.times,
-          y: data.temperature_2m.actual.values,
+          x: data.relative_humidity_2m.actual.times,
+          y: data.relative_humidity_2m.actual.values,
           mode: "line",
           name: "Temperature",
           marker: {
             color: "rgb(219, 64, 82)",
+            size: 12,
+          },
+        };
+
+        // console.log(data.relative_humidity_2m.predictions.timeStamp);
+
+        let trace2 = {
+          x: data.relative_humidity_2m.predictions.timeStamp,
+          y: data.relative_humidity_2m.predictions.mean,
+          mode: "line",
+          name: "Mean",
+          marker: {
+            color: "brown",
+            size: 12,
+          },
+        };
+
+        let trace3 = {
+          x: data.relative_humidity_2m.predictions.timeStamp,
+          y: data.relative_humidity_2m.predictions.upperPercentile,
+          mode: "line",
+          name: "UpperPercentile",
+          marker: {
+            color: "green",
+            size: 12,
+          },
+        };
+
+        let trace4 = {
+          x: data.relative_humidity_2m.predictions.timeStamp,
+          y: data.relative_humidity_2m.predictions.lowerPercentile,
+          mode: "line",
+          name: "LowerPercentile",
+          marker: {
+            color: "black",
             size: 12,
           },
         };
@@ -65,7 +100,7 @@
         };
 
         //Draw graph
-        Plotly.newPlot("chartDiv", [trace1], layout);
+        Plotly.newPlot("chartDiv", [trace1, trace2, trace3, trace4], layout);
       };
 
       //Log errors

@@ -1,69 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Plotly Graph</title>
-    <!-- Include Plotly CDN -->
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <title>WebSocket Client</title>
   </head>
   <body>
-    <div id="plot"></div>
+    <h1>Messages from Server</h1>
+    <p
+      style="border-style: solid; width: 500px; border-width: 1px"
+      id="messages"
+    ></p>
 
-    <script>
-      // Function to fetch plot data
-      async function fetchPredictions() {
-        try {
-          // Fetch the predictions data from the server
-          const response = await fetch(
-            "../machine_learning/synthetic/predictions/synthetic_prediction.json"
-          );
-          const predictions = await response.json();
+    <h1>Select Weather Feature</h1>
+    <form onchange="sendMessage()">
+      <label>
+        <input
+          type="radio"
+          name="weatherFeature"
+          value="temperature_2m"
+          checked
+        />
+        Temperature 2m
+      </label>
+      <label>
+        <input
+          type="radio"
+          name="weatherFeature"
+          value="relative_humidity_2m"
+        />
+        Relative Humidity 2m
+      </label>
+      <label>
+        <input type="radio" name="weatherFeature" value="precipitation" />
+        Precipitation
+      </label>
+      <label>
+        <input type="radio" name="weatherFeature" value="wind_speed_10m" /> Wind
+        Speed 10m
+      </label>
+      <label>
+        <input type="radio" name="weatherFeature" value="wind_direction_10m" />
+        Wind Direction 10m
+      </label>
+    </form>
 
-          // Call function to plot the data
-          plotData(predictions);
-        } catch (error) {
-          console.error("Error fetching predictions data:", error);
-        }
-      }
+    <div id="chartDiv"></div>
+    <div id="sentimentChart"></div>
 
-      // Function to plot the data
-      function plotData(predictions) {
-        console.log(predictions[0].mean);
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
-        // Create Plotly trace from the predictions object
-        const trace = {
-          x: predictions.mean,
-          y: predictions.quantiles,
-          type: "scatter",
-          mode: "lines",
-          name: "Mean", // You can change this as needed
-          marker: {
-            color: "rgb(219, 64, 82)",
-            size: 12,
-          },
-        };
-
-        // Create layout for the plot
-        const layout = {
-          title: "Synthetic Data Plot",
-          font: {
-            size: 25,
-          },
-          xaxis: {
-            title: "Time (hours)",
-          },
-          yaxis: {
-            title: "Value",
-          },
-        };
-
-        // Plot the data using Plotly
-        Plotly.newPlot("plot", [trace], layout);
-      }
-
-      // Call fetchPredictions function when the page loads
-      window.onload = fetchPredictions;
-    </script>
+    <script src="./scripts/script.js"></script>
   </body>
 </html>

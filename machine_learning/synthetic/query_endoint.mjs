@@ -77,6 +77,17 @@ async function invokeEndpoint() {
     //Must install @types/node for this to work
     let predictions = JSON.parse(Buffer.from(response.Body).toString("utf8"));
 
+    //print the time adding 1 hour
+    // const predictionsWithAdjustedTimestamps = predictions.map(
+    //   (prediction, index) => {
+    //     const originalTimestamp = endpointData.instances[0].start;
+    //     console.log({
+    //       timestamp: addOneHour(originalTimestamp),
+    //       value: prediction,
+    //     });
+    //   }
+    // );
+    console.log(predictions)
     //Write prediction to a file
     fs.writeFileSync(
       "./predictions/synthetic_prediction.json",
@@ -89,3 +100,10 @@ async function invokeEndpoint() {
 }
 
 invokeEndpoint();
+
+// Function to add one hour to a given timestamp
+function addOneHour(timestamp) {
+  const originalTime = new Date(timestamp);
+  const newTime = new Date(originalTime.getTime() + 60 * 60 * 1000); // Adding one hour (in milliseconds)
+  return newTime.toISOString();
+}

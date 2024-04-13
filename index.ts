@@ -1,23 +1,21 @@
-const world = "world";
-
-// import { fetchWeatherApi } from "openmeteo";
 import axios from "axios";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { PutCommand, DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
-import { NewsEntry } from "./news_api";
 
 //This is where the connection to the dynamodb is created
 const client = new DynamoDBClient({});
 const documentClient = DynamoDBDocumentClient.from(client);
 
-interface BoredApi {
-  activity: string | null;
-  type: string;
-  price: number;
+interface Params {
+  latitude: number;
+  longitude: number;
+  start_date: string;
+  end_date: string;
+  hourly: string[];
 }
 
 // This is the query parameter for the ope matroo endpoint
-const params = {
+const params: Params = {
   latitude: 51.5072,
   longitude: 0.1276,
   start_date: "2009-12-29",
@@ -39,15 +37,15 @@ let feature_lists: Array<string> = [
   "wind_direction_10m",
 ];
 
-// This uploads weather data to the dynamo db
+// This uploads weather data gotten from the open-meteo api to the dynamo db
 async function uploadWeatherData() {
   try {
     const url = "https://archive-api.open-meteo.com/v1/archive";
     const responses = await axios.get(url, { params });
     const response: any = responses.data.hourly;
     for (let i = 0; i < feature_lists.length; i++) {
-      for (let j = 0; j < response[feature_lists[i]].length; j++) {
-        //This returns the value of each feature
+      for (let j = 0; j < 500; j++) {
+        //This inputs the value of each feature into the weather table on dynamodb
         const command = new PutCommand({
           TableName: "weather",
           Item: {
@@ -83,40 +81,5 @@ async function uploadWeatherData() {
   }
 }
 
-
-// uploadWeatherData();
-
-async function uploadNewsData(newsEntry: NewsEntry) {
-  try {
-    const command = new PutCommand({
-      TableName: "weather",
-      Item: {
-        news_feature: newsEntry.feature,
-        news_timestamp: newsEntry.publishedAt,
-        news: newsEntry.description,
-      },
-    });
-    //Store data in DynamoDB and handle errors
-    try {
-      const response = await documentClient.send(command);
-      console.log(response);
-    } catch (err) {
-      console.error("ERROR uploading data: " + JSON.stringify(err));
-    }
-  } catch (ex: any) {
-    if (ex.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.log("Response data:", ex.response.data);
-      // console.log()
-      console.log("Response status:", ex.response.status);
-      console.log("Response headers:", ex.response.headers);
-    } else if (ex.request) {
-      // The request was made but no response was received
-      console.log("Request data:", ex.request);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log("Error message:", ex.message);
-    }
-  }
-}
+//The upload weather function is called
+uploadWeatherData();
