@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Weathered</title>
+    <link rel="stylesheet" href="./style/index.css" />
+  </head>
+  <body class="weathered">
+    <div class="container">
+      <!-- Loader element -->
+      <div id="loader" class="loader"></div>
+      <h1><a href="index.html"> Weathered</a></h1>
+      <p
+        style="border-style: solid; width: 500px; border-width: 1px"
+        id="messages"
+      ></p>
+
+      <h1>Select Weather Feature Below:</h1>
+      <form onchange="sendMessage()">
+        <label>
+          <input
+            type="radio"
+            name="weatherFeature"
+            value="temperature_2m"
+            checked
+          />
+          Temperature 2m
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="weatherFeature"
+            value="relative_humidity_2m"
+          />
+          Relative Humidity 2m
+        </label>
+        <label>
+          <input type="radio" name="weatherFeature" value="precipitation" />
+          Precipitation
+        </label>
+        <label>
+          <input type="radio" name="weatherFeature" value="wind_speed_10m" />
+          Wind Speed 10m
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="weatherFeature"
+            value="wind_direction_10m"
+          />
+          Wind Direction 10m
+        </label>
+      </form>
+
+      <div class="charts">
+        <div id="chartDiv"></div>
+        <br />
+        <p>The sentiment data for <span class="feature">resr</span></p>
+        <br />
+        <div id="sentimentChart"></div>
+      </div>
+    </div>
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <script src="./scripts/script.js"></script>
+  </body>
+</html>

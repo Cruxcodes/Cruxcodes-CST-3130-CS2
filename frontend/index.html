@@ -1,53 +1,18 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>WebSocket Client</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weathered</title>
+    <link rel="stylesheet" href="./style/index.css" />
   </head>
-  <body>
-    <h1>Messages from Server</h1>
-    <p
-      style="border-style: solid; width: 500px; border-width: 1px"
-      id="messages"
-    ></p>
-
-    <h1>Select Weather Feature</h1>
-    <form onchange="sendMessage()">
-      <label>
-        <input
-          type="radio"
-          name="weatherFeature"
-          value="temperature_2m"
-          checked
-        />
-        Temperature 2m
-      </label>
-      <label>
-        <input
-          type="radio"
-          name="weatherFeature"
-          value="relative_humidity_2m"
-        />
-        Relative Humidity 2m
-      </label>
-      <label>
-        <input type="radio" name="weatherFeature" value="precipitation" />
-        Precipitation
-      </label>
-      <label>
-        <input type="radio" name="weatherFeature" value="wind_speed_10m" /> Wind
-        Speed 10m
-      </label>
-      <label>
-        <input type="radio" name="weatherFeature" value="wind_direction_10m" />
-        Wind Direction 10m
-      </label>
-    </form>
-
-    <div id="chartDiv"></div>
-    <div id="sentimentChart"></div>
-
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-
-    <script src="./scripts/script.js"></script>
+  <body class="page">
+    <div class="page_container">
+      <h1>Welcome to Weathered</h1>
+      <p>A data visualization site for weather predictions</p>
+      <div>
+        <a href="./weathered.html">Click to view data</a>
+      </div>
+    </div>
   </body>
 </html>

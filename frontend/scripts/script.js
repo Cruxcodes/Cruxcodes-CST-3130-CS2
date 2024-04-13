@@ -1,3 +1,13 @@
+// Show loader function
+function showLoader() {
+  document.getElementById("loader").style.display = "block";
+}
+
+// Hide loader function
+function hideLoader() {
+  document.getElementById("loader").style.display = "none";
+}
+
 function plotPieChart(pieData) {
   // Data structure for the pie chart
   const data = [
@@ -28,6 +38,11 @@ function plotSentimentChart(data) {
   let negative = [];
   let neutral = [];
 
+  let selectedValue = document.querySelector(
+    'input[name="weatherFeature"]:checked'
+  ).value;
+
+  document.querySelector(".feature").innerHTML = selectedValue;
   for (var i = 0; i < dataValues.length; i++) {
     if (dataValues[i] == 0) {
       neutral.push(dataValues[i]);
@@ -37,9 +52,7 @@ function plotSentimentChart(data) {
       negative.push(dataValues[i]);
     }
   }
-  console.log(negative);
-  console.log(neutral);
-  console.log(positive);
+
   let positivePercentage = calculatePercentage(
     dataValues.length,
     positive.length
@@ -70,7 +83,7 @@ function plotSentimentChart(data) {
     {
       width: 1000,
       height: 500,
-      title: `$} Sentiments Pie Chart`,
+      title: `${selectedValue} Sentiments Pie Chart`,
     }
   );
 }
@@ -94,6 +107,8 @@ connection.onmessage = function (msg) {
     'input[name="weatherFeature"]:checked'
   ).value;
 
+  hideLoader();
+
   //This calls the function to plot the sentiment
   plotSentimentChart(data[selectedValue].sentiment);
 
@@ -107,7 +122,6 @@ connection.onmessage = function (msg) {
       size: 12,
     },
   };
-
 
   let trace2 = {
     x: data[selectedValue].predictions.timeStamp,
@@ -168,6 +182,7 @@ connection.onerror = function (error) {
 
 //Send message to server
 function sendMessage() {
+  showLoader();
   //Get text from form
   let msgText = "";
 

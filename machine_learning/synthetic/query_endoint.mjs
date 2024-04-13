@@ -63,7 +63,7 @@ const endpointData = {
 };
 
 //Calls endpoint and logs results
-async function invokeEndpoint() {
+export async function invokeEndpoint() {
   //Create and send command with data
   const command = new InvokeEndpointCommand({
     EndpointName: "QAsynthetic",

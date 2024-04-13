@@ -1,0 +1,151 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+body {
+  background: rgba(245, 222, 179, 0.808);
+}
+
+.page {
+  display: flex;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+  font-style: normal;
+  justify-self: center;
+  margin: 0px;
+  padding: 0px;
+}
+.page_container {
+  position: absolute;
+  top: 50%;
+  text-align: center;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgb(69, 73, 84);
+}
+.page_container h1 {
+  font-size: 50px;
+}
+.page_container p {
+  font-size: 1.3em;
+}
+.page_container div {
+  background-image: linear-gradient(45deg, rgba(13, 10, 11, 0.7), rgb(69, 73, 84));
+  width: fit-content;
+  padding: 15px 20px;
+  background-size: 200%;
+  border-radius: 30px;
+  transition: 0.3s;
+  position: relative;
+  box-shadow: 0px 3px 40px rgb(243, 239, 245);
+  margin: 40px auto;
+  animation: buttonMove 0.5s infinite alternate-reverse;
+}
+.page_container div:hover {
+  animation: none;
+  background: rgb(13, 10, 11);
+  cursor: pointer;
+}
+.page_container div:hover::before {
+  background: rgb(114, 110, 110);
+  transition: 0.3s;
+  top: 10%;
+}
+.page_container div:hover::after {
+  background: rgb(82, 74, 74);
+  transition: 0.3s;
+  bottom: 10%;
+}
+.page_container div::before {
+  content: "";
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  background: #000;
+  width: 100%;
+  height: 100%;
+  z-index: -10;
+  border-radius: 30px;
+}
+.page_container div::after {
+  content: "";
+  position: absolute;
+  bottom: 0%;
+  left: 0%;
+  background: #000;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  border-radius: 30px;
+}
+.page_container div a {
+  text-decoration: none;
+  margin: 0px;
+  color: white;
+}
+
+@keyframes buttonMove {
+  from {
+    transform: translateY(-3px);
+    background-position: 0% 50%;
+  }
+  to {
+    transform: translateY(3px);
+    background-position: 100% 0%;
+  }
+}
+.weathered {
+  margin: 0px;
+  font-family: "Poppins", sans-serif;
+}
+.weathered .container {
+  max-width: 1500px;
+  width: 90%;
+  margin: auto;
+}
+.weathered .container a {
+  text-decoration: none;
+  color: rgb(69, 73, 84);
+}
+.weathered form {
+  font-family: "Inter", sans-serif;
+  margin: 10px 0px;
+}
+.weathered .charts {
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.weathered .charts .chartDiv {
+  width: 100%;
+}
+.weathered .charts .sentimentChart {
+  margin: auto;
+}
+.weathered .charts p {
+  font-weight: 500;
+  font-size: 1.2em;
+}
+
+.loader {
+  border: 8px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 8px solid #3498db;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+  display: none; /* Hide loader by default */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -25px; /* Half of the height */
+  margin-left: -25px; /* Half of the width */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}/*# sourceMappingURL=index.css.map */
