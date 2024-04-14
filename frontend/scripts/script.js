@@ -76,7 +76,7 @@ function plotSentimentChart(data) {
         labels: ["Positive", "Negative", "Neutral"],
         type: "pie",
         marker: {
-          colors: ["Blue", "purple", "gray"], // Specify custom colors here
+          colors: ["#82AA68", "#C80E50", "#b8b6b0"], // Specify custom colors here
         },
       },
     ],
