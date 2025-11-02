@@ -67,3 +67,11 @@ The application uses Plotly.js to create:
 
 ## Academic Project
 This project was completed as part of coursework at Middlesex University (April 2024).
+
+<img width="541" height="306" alt="image" src="https://github.com/user-attachments/assets/d1adfcf6-89bc-4fb0-8b0c-f807f63d117f" />
+<img width="623" height="499" alt="image" src="https://github.com/user-attachments/assets/cfae863a-f1a9-4e38-8449-f880da125e07" />
+<img width="626" height="316" alt="image" src="https://github.com/user-attachments/assets/8476d060-b39e-4edd-b77e-c0a3cf78c929" />
+
+
+
+
